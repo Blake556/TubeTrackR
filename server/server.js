@@ -63,7 +63,7 @@ app.get('/handleOAuthCallback', async (req, res) => {
     const accessTokenParam = encodeURIComponent(tokens.access_token);
     // encodeURIComponent will make likedVideos formated so it cant be sent through a url. JSON.stringify will turn the obj or array into a string so it can be successfully sent
     const likedVideosParam = encodeURIComponent(JSON.stringify(likedVideos));
-    
+
     //The url that res.redirect will use with accessTokenParam and likedVideosParam will be sent to front end in url
     const redirectURLWithParams = `http://localhost:3000?accessToken=${accessTokenParam}&likedVideos=${likedVideosParam}`;
     //Redirect to frontend with the access token and liked videos
@@ -77,9 +77,10 @@ app.get('/handleOAuthCallback', async (req, res) => {
 
 
 // This route is called when form on the front-end is submitted
-app.post('/search', async (req, res) => {
+app.get('/search', async (req, res) => {
   try {
-    const { query } = req.body;
+    const { query } = req.query;
+    console.log('Query Parameter:', query);
     // Communicate with YouTube API to search for videos based on the query
     const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
       params: {
@@ -88,9 +89,17 @@ app.post('/search', async (req, res) => {
         part: 'snippet',
         maxResults: 50 
       }
+
+    });
+
+    let searchQuery = response.data.items.map((video) => {
+      return {
+        title: video.snippet.title,
+        thumbnail: video.snippet.thumbnails.default.url
+      };
     });
     // Send back the search results to the frontend
-    res.json(response.data);
+    res.json(searchQuery);
   } catch (error) {
     console.error('Error searching:', error);
     res.status(500).send('Internal Server Error');
