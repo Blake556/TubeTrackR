@@ -94,17 +94,45 @@ app.get('/search', async (req, res) => {
 
     let searchQuery = response.data.items.map((video) => {
       return {
+        videoId: video.id.videoId,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url
       };
     });
     // Send back the search results to the frontend
+   
     res.json(searchQuery);
   } catch (error) {
     console.error('Error searching:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+app.post('/addSearchVideoToPlaylist', async (req, res) => {
+  const { videoId, accessToken} = req.query;
+  console.log(videoId, accessToken);
+  try {
+    const response = await axios.post(
+        `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key={accessToken}`,
+        {},
+        {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+    res.json({ message: 'Video added to liked playlist', response: response.data });
+} catch (error) {
+      console.error('Error:', error);
+      res.status(500).json('Internal Server Error');
+  }
+ }
+);
+
+
 
 
 //Upon successful oAuth fetchLikedVideos will be called from '/handleOAuthCallback' route to fetch liked videos and send it when responding to front end
