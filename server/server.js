@@ -12,7 +12,7 @@ const APIkey = process.env.API_KEY
 const clientID = process.env.CLIENT_ID
 const clientSecret = process.env.CLIENT_SECRET
 const redirectURL = 'http://localhost:3050/handleOAuthCallback';
-
+let tokens;
 
 //This just makes working with backend port and a seperate front end port and the exchange of data
 const corsOptions = {
@@ -50,11 +50,25 @@ app.get('/authUrl', async (req, res) => {
     res.json({ url: authUrl });
 });
 
-// 'handleOAuthCallback'route will use res.json({ url: authUrl }); and extract the data using code variable. 
 app.get('/handleOAuthCallback', async (req, res) => {
   const code = req.query.code;
   try {
     const { tokens } = await oauth2Client.getToken(code);
+    // No need to set credentials here since you're not using them in the backend
+    const accessToken = tokens.access_token;
+    const redirectURLWithParams = `http://localhost:3000?accessToken=${encodeURIComponent(accessToken)}`;
+    res.redirect(redirectURLWithParams);
+  } catch (error) { 
+    console.error('Error exchanging code for tokens:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+/*
+// 'handleOAuthCallback'route will use res.json({ url: authUrl }); and extract the data using code variable. 
+app.get('/handleOAuthCallback', async (req, res) => {
+  const code = req.query.code;
+  try {
+    ({ tokens } = await oauth2Client.getToken(code));
     oauth2Client.setCredentials(tokens);
     // Call fetchLikedVideos and wait for it to resolve
     const likedVideos = await fetchLikedVideos(tokens);
@@ -73,6 +87,44 @@ app.get('/handleOAuthCallback', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+*/
+app.get('/currentLikedPlaylist', async (req, res) => {
+  const { accessToken } = req.query;
+  console.log(accessToken)
+  
+  try {
+    const { accessToken } = req.query; // Assuming access_token is passed in the query params
+    console.log(accessToken)
+    
+    const endpoint = 'https://www.googleapis.com/youtube/v3/videos';
+    const params = {
+      videoCategoryId: 10,
+      part: 'snippet',
+      myRating: 'like',
+      maxResults: 50,
+    };
+
+    const response = await axios.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: params,
+    });
+
+    const likedVideos = response.data.items.map((video) => {
+      return {
+        title: video.snippet.title,
+        thumbnail: video.snippet.thumbnails.default.url,
+      };
+    });
+
+    res.json(likedVideos);
+  } catch (error) {
+    console.error('Error fetching liked videos:', error);
+    res.status(500).send('Internal Server Error');
+  }
+  
+})
 
 
 
@@ -115,7 +167,7 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
   console.log(videoId, accessToken);
   try {
     const response = await axios.post(
-        `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key={accessToken}`,
+        `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
         {},
         {
             headers: {
@@ -124,7 +176,9 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
             }
         }
     );
-    res.json({ message: 'Video added to liked playlist', response: response.data });
+
+    const updatedLikedVideos = await fetchLikedVideos({ access_token: accessToken });
+    res.json({ message: 'Video added to liked playlist', updatedLikedVideos });
 } catch (error) {
       console.error('Error:', error);
       res.status(500).json('Internal Server Error');
@@ -134,7 +188,7 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
 
 
 
-
+/*
 //Upon successful oAuth fetchLikedVideos will be called from '/handleOAuthCallback' route to fetch liked videos and send it when responding to front end
 async function fetchLikedVideos(tokens) {
   try {
@@ -169,7 +223,7 @@ async function fetchLikedVideos(tokens) {
     throw error;
   }
 }
-
+*/
 
 
 /*
