@@ -112,7 +112,9 @@ app.get('/currentLikedPlaylist', async (req, res) => {
     });
 
     const likedVideos = response.data.items.map((video) => {
+    
       return {
+        videoId: video.id,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url,
       };
@@ -164,7 +166,7 @@ app.get('/search', async (req, res) => {
 
 app.post('/addSearchVideoToPlaylist', async (req, res) => {
   const { videoId, accessToken} = req.query;
-  console.log(videoId, accessToken);
+  console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
   try {
     const response = await axios.post(
         `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
@@ -186,44 +188,71 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
  }
 );
 
+app.delete('/removeLikedVideo', async (req, res) => {
+  const { videoId, accessToken } = req.query;
+  console.log('VideoId: ' + videoId + ' Token: ' + accessToken);
 
-
-/*
-//Upon successful oAuth fetchLikedVideos will be called from '/handleOAuthCallback' route to fetch liked videos and send it when responding to front end
-async function fetchLikedVideos(tokens) {
   try {
-    const accessToken = tokens.access_token;
-    //console.log('Token passed', accessToken)
-    const endpoint = 'https://www.googleapis.com/youtube/v3/videos';
-    const params = {
-      videoCategoryId: 10,
-      part: 'snippet',
-      myRating: 'like',
-      maxResults: 50,
-    };
+      // Make a DELETE request to remove the video from the liked playlist
+      const response = await axios.delete(
+          `https://www.googleapis.com/youtube/v3/playlistItems`,
+          {
+              params: {
+                  id: videoId, // ID of the playlist item (video) to be removed
+              },
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      );
 
-    const response = await axios.get(endpoint, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: params,
-    });
-
-    console.log(response.data.items[6]);
-    const likedVideos = response.data.items.map((video) => {
-      return {
-        title: video.snippet.title,
-        thumbnail: video.snippet.thumbnails.default.url,
-      };
-    });
-    //console.log(likedVideos);
-    return likedVideos;
+      // If the deletion is successful, respond with a success message
+      res.json({ message: 'Video removed from liked playlist', response: response.data });
   } catch (error) {
-    console.log('Error fetching liked videos', error);
-    throw error;
+      console.error('Error removing video from liked playlist:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
-}
-*/
+});
+
+// app.delete('/removeLikedVideo', async (req, res) => {
+//   const { videoId, accessToken} = req.query;
+//   console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
+//   try {
+//     // Make a DELETE request to remove the video from the liked playlist
+//     const response = await axios.delete(
+//       `https://www.googleapis.com/youtube/v3/playlistItems`,
+//       {
+//         params: {
+//           id: videoId, // ID of the playlist item (video) to be removed
+//         },
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//         },
+//       }
+//     );
+
+//     // If the deletion is successful, respond with a success message
+//     res.json({ message: 'Video removed from liked playlist', response: response.data });
+//   // try {
+//   //   const response = await axios.post(
+//   //     `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
+//   //     {},
+//   //     {
+//   //         headers: {
+//   //             'Authorization': `Bearer ${accessToken}`,
+//   //             'Content-Type': 'application/json'
+//   //         }
+//   //     }
+//   //     );
+
+//   //   res.json('Request recieved')
+//   } catch (error) {
+//     console.log('Error ', error)
+//     res.status(500).send('Internal Server Error');
+//   }
+// })
+
+
 
 
 /*
@@ -231,16 +260,6 @@ app.get('/Home', (req, res) => {
   res.json({ message: 'Authorization successful!', data: '' });
 });
 
-
-async function fetchAccessToken(oauth2Client) {
-    try {
-        const accessToken = oauth2Client.credentials.access_token;
-        return accessToken;
-    } catch (error) {
-        console.log('Error fetching access token', error);
-        throw error;
-    }
-}
 */
 
 app.listen(PORT, () => {
