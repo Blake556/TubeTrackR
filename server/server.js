@@ -89,12 +89,12 @@ app.get('/handleOAuthCallback', async (req, res) => {
 });
 */
 app.get('/currentLikedPlaylist', async (req, res) => {
-  const { accessToken } = req.query;
-  console.log(accessToken)
+  //const { accessToken } = req.query;
+  //console.log(accessToken)
   
   try {
     const { accessToken } = req.query; // Assuming access_token is passed in the query params
-    console.log(accessToken)
+    //console.log(accessToken)
     
     const endpoint = 'https://www.googleapis.com/youtube/v3/videos';
     const params = {
@@ -110,14 +110,15 @@ app.get('/currentLikedPlaylist', async (req, res) => {
       },
       params: params,
     });
-
+   
     const likedVideos = response.data.items.map((video) => {
-    
+      //console.log(video.id)
       return {
         videoId: video.id,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url,
       };
+     
     });
 
     res.json(likedVideos);
@@ -157,7 +158,7 @@ app.get('/search', async (req, res) => {
    
     res.json(searchQuery);
   } catch (error) {
-    console.error('Error searching:', error);
+    //console.error('Error searching:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -166,7 +167,7 @@ app.get('/search', async (req, res) => {
 
 app.post('/addSearchVideoToPlaylist', async (req, res) => {
   const { videoId, accessToken} = req.query;
-  console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
+  //console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
   try {
     const response = await axios.post(
         `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
@@ -188,31 +189,94 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
  }
 );
 
-app.delete('/removeLikedVideo', async (req, res) => {
+
+app.post('/removeLikedVideo', async (req, res) => {
   const { videoId, accessToken } = req.query;
-  console.log('VideoId: ' + videoId + ' Token: ' + accessToken);
 
   try {
-      // Make a DELETE request to remove the video from the liked playlist
-      const response = await axios.delete(
-          `https://www.googleapis.com/youtube/v3/playlistItems`,
-          {
-              params: {
-                  id: videoId, // ID of the playlist item (video) to be removed
-              },
-              headers: {
-                  Authorization: `Bearer ${accessToken}`,
-              },
+    const response = await axios.post(
+      `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=none&key=${accessToken}`,
+      {}, 
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
           }
+        }
       );
+      
 
-      // If the deletion is successful, respond with a success message
-      res.json({ message: 'Video removed from liked playlist', response: response.data });
+    console.log('Request:', response.config);
+    console.log('Response:', response.data);
+
+    res.json({ message: 'Video removed from liked playlist', response: response.data });
   } catch (error) {
-      console.error('Error removing video from liked playlist:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error removing video from liked playlist:', error);
+    console.log('Request:', error.config);
+    console.log('Response:', error.response.data);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+
+
+
+/*
+app.delete('/removeLikedVideo', async (req, res) => {
+  try {
+    // Extract video ID from request body or query parameters
+    const videoId = req.body.videoId || req.query.videoId;
+    const { accessToken } = req.query;
+    
+    // Ensure videoId is provided
+    if (!videoId) {
+      return res.status(400).json({ error: 'Video ID is required.' });
+    }
+
+    // Fetch the liked videos
+    const endpoint = 'https://www.googleapis.com/youtube/v3/videos';
+    const params = {
+      videoCategoryId: 10, // Assuming 10 is the category ID for liked videos
+      part: 'snippet',
+      myRating: 'like',
+      maxResults: 50,
+    };
+
+    const response = await axios.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: params,
+    });
+    
+    // Check if the requested video is in the liked videos
+    const likedVideo = response.data.items.find(video => video.id === videoId);
+    
+    // If the requested video is not found in the liked videos, return an error
+    if (!likedVideo) {
+      return res.status(404).json({ error: 'Video not found in liked videos.' });
+    }
+
+    // Construct URL for deleting the playlist item
+    const deleteUrl = `https://www.googleapis.com/youtube/v3/playlistItems?id=${videoId}&key=${accessToken}`;
+
+    // Make DELETE request to remove the video
+    await axios.delete(deleteUrl);
+
+    // Send success response
+    res.status(200).json({ message: 'Video removed from liked videos.' });
+  } catch (error) {
+    console.error('Error removing video from liked videos:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+*/
+
+
 
 // app.delete('/removeLikedVideo', async (req, res) => {
 //   const { videoId, accessToken} = req.query;
