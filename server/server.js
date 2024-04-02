@@ -12,7 +12,7 @@ const APIkey = process.env.API_KEY
 const clientID = process.env.CLIENT_ID
 const clientSecret = process.env.CLIENT_SECRET
 const redirectURL = 'http://localhost:3050/handleOAuthCallback';
-let tokens;
+
 
 //This just makes working with backend port and a seperate front end port and the exchange of data
 const corsOptions = {
@@ -112,11 +112,19 @@ app.get('/currentLikedPlaylist', async (req, res) => {
     });
    
     const likedVideos = response.data.items.map((video) => {
-      //console.log(video.id)
+
+      let publishDate = new Date(video.snippet.publishedAt); 
+      //console.log(video.snippet.publishedAt)
+      let timeAgo = getTimeAgo(publishDate, currentDate);
+
+      //console.log(video.snippet)
       return {
         videoId: video.id,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url,
+        channelTitle: video.snippet.channelTitle,
+        publishedAt: video.snippet.publishedAt,
+        timeAgo: timeAgo
       };
      
     });
@@ -135,7 +143,7 @@ app.get('/currentLikedPlaylist', async (req, res) => {
 app.get('/search', async (req, res) => {
   try {
     const { query } = req.query;
-    console.log('Query Parameter:', query);
+    //console.log('Query Parameter:', query);
     // Communicate with YouTube API to search for videos based on the query
     const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
       params: {
@@ -146,12 +154,21 @@ app.get('/search', async (req, res) => {
       }
 
     });
-
+    
+  
+    
     let searchQuery = response.data.items.map((video) => {
+
+      let publishDate = new Date(video.snippet.publishedAt); 
+      let timeAgo = getTimeAgo(publishDate, currentDate);
+
       return {
         videoId: video.id.videoId,
         title: video.snippet.title,
-        thumbnail: video.snippet.thumbnails.default.url
+        thumbnail: video.snippet.thumbnails.default.url,
+        channelTitle: video.snippet.channelTitle,
+        publishedAt: video.snippet.publishedAt,
+        timeAgo: timeAgo
       };
     });
     // Send back the search results to the frontend
@@ -162,6 +179,42 @@ app.get('/search', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+
+let currentDate = new Date(); 
+
+function getTimeAgo(publishDate, currentDate) {
+  let yearsAgo = currentDate.getFullYear() - publishDate.getFullYear();
+  let monthsAgo = currentDate.getMonth() - publishDate.getMonth();
+  let daysAgo = Math.floor((currentDate - publishDate) / (1000 * 60 * 60 * 24));
+  let weeksAgo = Math.floor(daysAgo / 7);
+
+  if (yearsAgo === 0) {
+      if (monthsAgo === 0) {
+          if (weeksAgo === 0) {
+              return `${daysAgo} days ago`;
+          } else {
+              return `${weeksAgo} weeks ago`;
+          }
+      } else {
+          return `${monthsAgo} months ago`;
+      }
+  } else {
+      return `${yearsAgo} years ago`;
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -204,117 +257,15 @@ app.post('/removeLikedVideo', async (req, res) => {
           }
         }
       );
-      
-
-    console.log('Request:', response.config);
-    console.log('Response:', response.data);
-
+    
+    //console.log('Response:', response.data);
     res.json({ message: 'Video removed from liked playlist', response: response.data });
   } catch (error) {
     console.error('Error removing video from liked playlist:', error);
-    console.log('Request:', error.config);
-    console.log('Response:', error.response.data);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-
-
-
-
-
-
-
-/*
-app.delete('/removeLikedVideo', async (req, res) => {
-  try {
-    // Extract video ID from request body or query parameters
-    const videoId = req.body.videoId || req.query.videoId;
-    const { accessToken } = req.query;
-    
-    // Ensure videoId is provided
-    if (!videoId) {
-      return res.status(400).json({ error: 'Video ID is required.' });
-    }
-
-    // Fetch the liked videos
-    const endpoint = 'https://www.googleapis.com/youtube/v3/videos';
-    const params = {
-      videoCategoryId: 10, // Assuming 10 is the category ID for liked videos
-      part: 'snippet',
-      myRating: 'like',
-      maxResults: 50,
-    };
-
-    const response = await axios.get(endpoint, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: params,
-    });
-    
-    // Check if the requested video is in the liked videos
-    const likedVideo = response.data.items.find(video => video.id === videoId);
-    
-    // If the requested video is not found in the liked videos, return an error
-    if (!likedVideo) {
-      return res.status(404).json({ error: 'Video not found in liked videos.' });
-    }
-
-    // Construct URL for deleting the playlist item
-    const deleteUrl = `https://www.googleapis.com/youtube/v3/playlistItems?id=${videoId}&key=${accessToken}`;
-
-    // Make DELETE request to remove the video
-    await axios.delete(deleteUrl);
-
-    // Send success response
-    res.status(200).json({ message: 'Video removed from liked videos.' });
-  } catch (error) {
-    console.error('Error removing video from liked videos:', error);
-    res.status(500).json({ error: 'Internal server error.' });
-  }
-});
-*/
-
-
-
-// app.delete('/removeLikedVideo', async (req, res) => {
-//   const { videoId, accessToken} = req.query;
-//   console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
-//   try {
-//     // Make a DELETE request to remove the video from the liked playlist
-//     const response = await axios.delete(
-//       `https://www.googleapis.com/youtube/v3/playlistItems`,
-//       {
-//         params: {
-//           id: videoId, // ID of the playlist item (video) to be removed
-//         },
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//         },
-//       }
-//     );
-
-//     // If the deletion is successful, respond with a success message
-//     res.json({ message: 'Video removed from liked playlist', response: response.data });
-//   // try {
-//   //   const response = await axios.post(
-//   //     `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
-//   //     {},
-//   //     {
-//   //         headers: {
-//   //             'Authorization': `Bearer ${accessToken}`,
-//   //             'Content-Type': 'application/json'
-//   //         }
-//   //     }
-//   //     );
-
-//   //   res.json('Request recieved')
-//   } catch (error) {
-//     console.log('Error ', error)
-//     res.status(500).send('Internal Server Error');
-//   }
-// })
 
 
 
