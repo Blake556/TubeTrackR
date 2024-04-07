@@ -1,0 +1,7 @@
+.Liked-video-list {
+    width: 550px;
+    max-height: 87vh;
+    overflow-y: auto;
+    margin-top: 20px;
+    color: white;
+}
