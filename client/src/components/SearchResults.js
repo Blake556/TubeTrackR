@@ -25,27 +25,29 @@ function SearchResults(props) {
 
   return (
     <div className="Search-result-container">
-      <div className="Search-result row">
-        <div className="img-box col-4">
+      <div className="Search-result row ">
+        <div className="result-img-box col-4">
           <img
             src={props.thumbnail}
             height="100px"
             width="175px"
-            className="liked-img"
+            className="result-liked-img"
           />
         </div>
-        <div className="col-7">
-          <div className="liked-title row">
-            <p>{props.title}</p>
+        <div className="col-7 result-video-details">
+          <div className="results-video-title ">
+            <p>{props.title.length > 60 ? props.title.substring(0, 60) + '...' : props.title}</p>
           </div>
-          <div className="liked-details row">
+          <div className="result-channel-title">
             <p>
               {props.channelTitle} &bull; {props.timeAgo}
             </p>
           </div>
         </div>
         <div className="col-1 d-flex align-items-center justify-content-center">
-          <button onClick={handleAddLikeVideo}>
+          <button 
+            className='like-video-btn'
+            onClick={handleAddLikeVideo}>
             <FontAwesomeIcon icon={faThumbsUp} />
           </button>
         </div>

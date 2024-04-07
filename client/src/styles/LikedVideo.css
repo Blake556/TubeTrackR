@@ -41,22 +41,18 @@ p.liked-title  {
 
 }
 
-.liked-details {
+.liked-video-details {
+    padding: 0;
+}
+
+.liked-video-channel {
     /* border: 1px solid gray; */
     height: auto;
     color: lightgray;
     font-size: 12px;
 }
 
-.liked-title p {
-    margin: 0;
-    padding: 0;
-}
 
-.liked-details p  {
-    margin: 0;
-    padding: 0;
-}
 
 .Liked-video:hover {
     background-color: rgb(39, 39, 39);

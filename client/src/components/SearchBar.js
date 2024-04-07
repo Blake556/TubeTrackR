@@ -15,7 +15,7 @@ function SearchBar(props) {
   };
 
   return ( 
-    <div className="search-bar-container d-flex  align-items-center justify-content-center">
+    <div className="search-bar-container d-flex align-items-center justify-content-center">
       <form className="search-form " action="" method="" onSubmit={handleSubmit}>
         <input
           className="search-bar"

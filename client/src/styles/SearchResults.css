@@ -1,10 +1,51 @@
 .Search-result-container {
-    color: white;
-    width: auto; 
+  padding: 8px 0;
 }
 
-.liked {
-    width: 25px;
-    height: 25px;
-    color: red;
-} 
+.Search-result-row {
+  /* border: 1px solid gray; */
+  height: 100px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.result-img-box {
+}
+
+.result-liked-img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.results-video-title {
+  /* border: 1px solid gray; */
+  height: auto;
+  margin-bottom: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.result-video-details {
+  padding: 0;
+}
+
+.result-channel-title {
+  height: auto;
+  color: lightgray;
+  font-size: 12px;
+}
+
+.like-video-btn {
+  background-color: transparent;
+  font-size: 1.5rem;
+  color: gray;
+  outline: none;
+  border: none;
+}
+
+.like-btn:active {
+  color: blue;
+}

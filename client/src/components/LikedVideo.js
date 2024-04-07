@@ -47,11 +47,11 @@ async function handleRemoveVideo() {
                     width='175px'
                     className='liked-img'  />
             </div>
-            <div className="col-6">
-                <div className="liked-title-row row">
+            <div className="col-6 liked-video-details">
+                <div className="liked-title-row ">
                     <p className="liked-title">{props.title.length > 60 ? props.title.substring(0, 60) + '...' : props.title}</p>
                 </div>
-                <div className="liked-details row">
+                <div className="liked-video-channel">
                 <p>{props.channelTitle} &bull; {props. timeAgo}</p>
                 </div>
             </div>
