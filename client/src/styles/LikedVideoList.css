@@ -1,5 +1,5 @@
 .Liked-video-list {
-    width: 550px;
+    width: auto;
     max-height: 87vh;
     overflow-y: auto;
     margin-top: 20px;

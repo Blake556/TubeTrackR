@@ -48,8 +48,8 @@ async function handleRemoveVideo() {
                     className='liked-img'  />
             </div>
             <div className="col-6">
-                <div className="liked-title row">
-                    <p>{props.title.length > 65 ? props.title.substring(0, 65) + '...' : props.title}</p>
+                <div className="liked-title-row row">
+                    <p className="liked-title">{props.title.length > 60 ? props.title.substring(0, 60) + '...' : props.title}</p>
                 </div>
                 <div className="liked-details row">
                 <p>{props.channelTitle} &bull; {props. timeAgo}</p>

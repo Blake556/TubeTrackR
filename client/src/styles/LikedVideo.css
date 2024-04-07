@@ -26,13 +26,19 @@
     border-radius: 10px;
 }
 
-.liked-title {
+.liked-title-row {
     /* border: 1px solid gray; */
     height: auto;
     margin-bottom: 8px;
     color: white;
     font-weight: bold;
     font-size: 16px;
+}
+
+p.liked-title  {
+    padding: 0;
+    width: 280px;
+
 }
 
 .liked-details {
@@ -61,7 +67,7 @@
     padding: 0px;
 }
 .remove-like-btn {
-    background-color: rgb(89, 89, 89);
+    background-color: rgb(59, 59, 59);
     border-radius: 50%;
     
     color: white;
