@@ -1,11 +1,11 @@
 .search-component {
     /* border: .5px solid white; */
-    width: 550px;
+    width: auto;
     /* max-height: 87vh; */
     min-height: 100px;
     max-height: 600px;
     overflow-y: auto;
-    margin: 20px;
+    /* margin: 20px; */
 
 }
 
@@ -16,4 +16,4 @@
 .search-container {
     height: 75px;
 }
-
+ 

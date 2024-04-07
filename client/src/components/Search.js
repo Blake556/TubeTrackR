@@ -12,7 +12,7 @@ function Search(props) {
   console.log(searchResults);
 
   //This function will setSearch state for use when sending to express
-  function handleInputChange(event) {
+  function handleInputChange(event) { 
     setSearchBar(event.target.value);
   }
 
@@ -37,13 +37,13 @@ function Search(props) {
   
   return (
     <div className="search-component ">
-      <div className="search-bar">
+      
         <SearchBar
           searchBar={searchBar}
           handleInputChange={handleInputChange}
           handleSubmit={handleSubmit}
         />
-      </div>
+    
       <div className="search-results-list">
         {searchResults.map((video, index) => (
           <SearchResults

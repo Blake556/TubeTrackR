@@ -1,10 +1,10 @@
 .Search-result-container {
     color: white;
-   
+    width: auto; 
 }
 
 .liked {
     width: 25px;
     height: 25px;
     color: red;
-}
+} 

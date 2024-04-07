@@ -3,7 +3,7 @@ import Header from "./Header";
 import LikedVideoList from './LikedVideoList'
 import Search from './Search'
 
-function Home(props) {
+function Home(props) { 
 
   return (
     <div className="Home">

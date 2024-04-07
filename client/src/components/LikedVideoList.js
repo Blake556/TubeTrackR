@@ -8,7 +8,7 @@ function LikedVideoList(props) {
   console.log(likedVideos)
 
 
-  useEffect(() => {
+  useEffect(() => { 
     // Fetch liked videos using the access token
     if (props.accessToken) {
       axios.get('http://localhost:3050/currentLikedPlaylist', {

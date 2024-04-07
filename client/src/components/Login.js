@@ -9,7 +9,7 @@ function Login(props) {
         <h1 className="title text-center">
           Tube<span>TrackR</span>
         </h1>
-      </div> 
+      </div>  
       <div className="form-box d-flex flex-column align-items-center justify-content-center">
         <div className="login-description text-center mb-3">
           <p className="login-description text-center">

@@ -15,7 +15,7 @@ function SearchResults(props) {
         {
           params: { videoId: props.videoId, accessToken: props.accessToken },
         }
-      );
+      ); 
 
       console.log("Liked video: ", response.data);
     } catch (error) {

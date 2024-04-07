@@ -6,7 +6,7 @@
 .Liked-video-row {
     /* border: 1px solid gray; */
     height: 100px;
-    width: auto;
+    width: auto; 
     display: flex;
     align-items: center;
     border-radius: 5px;
