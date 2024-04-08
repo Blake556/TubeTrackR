@@ -8,6 +8,14 @@ function LikedVideoList(props) {
   console.log(likedVideos)
 
 
+
+  function removeFromLikedVideos(videoId) {
+    //let videoExist = likedVideos.find(video =>  video.videoId === videoId)
+
+    setLikedVideos(likedVideos.filter(video => video.videoId !== videoId))
+    //console.log(removedVideo)
+  }
+
   useEffect(() => { 
     // Fetch liked videos using the access token
     if (props.accessToken) {
@@ -37,7 +45,8 @@ function LikedVideoList(props) {
                 title={video.title}
                 channelTitle={video.channelTitle}
                 timeAgo={video.timeAgo}
-                thumbnail={video.thumbnail}  
+                thumbnail={video.thumbnail} 
+                removeFromLikedVideos={removeFromLikedVideos} 
                 /> 
         ))}
     </div>

@@ -1,5 +1,11 @@
 .Search-result-container {
-  padding: 8px 0;
+  padding: 8px 12px;
+ 
+}
+
+.Search-result-container:hover {
+    background-color: rgb(39, 39, 39);
+    border-radius: 25px;
 }
 
 .Search-result-row {

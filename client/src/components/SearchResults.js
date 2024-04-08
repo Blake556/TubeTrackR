@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./../styles/SearchResults.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 function SearchResults(props) {
-    
-  async function handleAddLikeVideo() {
-    console.log(props.videoId);
+  const [addToLikedVideo, setAddToLike] = useState({});
+    console.log(addToLikedVideo)
+
+  async function handleAddLikeVideo(videoId) {
+    //props.addToLikedVideos(props.videoId)
+    //console.log(props.videoId, '/', props.thumbnail, '/', props.title, '/',props.channelTitle, '/', props.timeAgo);
+
+    setAddToLike(
+      {
+        videoId: props.videoId, 
+        thumbnail: props.thumbnail, 
+        title: props.title, 
+        channelTitle: props.channelTitle, 
+        timeAgo: props.timeAgo
+      })
+
     try {
       const response = await axios.post(
         "http://localhost:3050/addSearchVideoToPlaylist",

@@ -16,6 +16,10 @@ function Search(props) {
     setSearchBar(event.target.value);
   }
 
+  // function addToLikedVideos(videoId) {
+  //   setSearchResults(searchResults.push(videoId))
+  //   console.log(videoId)
+  // }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -54,6 +58,7 @@ function Search(props) {
             channelTitle={video.channelTitle}
             timeAgo={video.timeAgo}
             accessToken={props.accessToken}
+            // addToLikedVideos={addToLikedVideos}
           />
         ))}
       </div>

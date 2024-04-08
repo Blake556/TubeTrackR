@@ -13,11 +13,12 @@ function Home(props) {
             
             </div>
             <div className="col-5">
-                <LikedVideoList accessToken={props.accessToken}/>
-            </div> 
-            <div className="col-5">
                 <Search accessToken={props.accessToken}/>
             </div> 
+            <div className="col-5">
+                <LikedVideoList accessToken={props.accessToken}/>
+            </div> 
+            
         </div>
     </div>
   );

@@ -20,8 +20,10 @@ function LikedVideo(props) {
 //     }
 //    }
 async function handleRemoveVideo() {
-   
-   
+
+    props.removeFromLikedVideos(props.videoId)
+    //console.log(props.videoId)
+
     try {
         const response = await axios.post('http://localhost:3050/removeLikedVideo', null, {
             params: { videoId: props.videoId, accessToken: props.accessToken }
@@ -35,10 +37,10 @@ async function handleRemoveVideo() {
 
 
   return (
-    <div className="Liked-video">
+    <div className="Liked-video-container">
         <div className="Liked-video-row row">
             <div className="col-1 d-flex align-items-center justify-content-center">
-                <span className='liked-number'>{props.id}</span>
+                <span className='liked-number'>{props.id + 1}</span>
             </div>
             <div className="img-box col-4">
                 <img 

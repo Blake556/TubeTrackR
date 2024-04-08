@@ -1,6 +1,5 @@
-.Liked-video {
- padding: 8px 0;
-
+.Liked-video-container {
+ padding: 8px 12px;
 }
 
 .Liked-video-row {
@@ -54,9 +53,10 @@ p.liked-title  {
 
 
 
-.Liked-video:hover {
+.Liked-video-container:hover {
     background-color: rgb(39, 39, 39);
     border-radius: 25px;
+   
 }
 
 .remove-like {
