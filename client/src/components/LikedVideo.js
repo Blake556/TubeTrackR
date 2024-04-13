@@ -1,39 +1,27 @@
 import './../styles/LikedVideo.css';
-//import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus } from '@fortawesome/free-solid-svg-icons';
 
 
 function LikedVideo(props) { 
-//    async function handleRemoveVideo() {
-//     console.log( props.accessToken); 
 
-//     try {
-//         const response = await axios.delete('http://localhost:3050/removeLikedVideo', null, {
-//             params: { videoId: props.videoId, accessToken: props.accessToken}
-//         });
+    async function handleRemoveVideo() {
 
-//         console.log('Liked video: ', response.data);
-//     } catch (error) {
-//         console.error('Error saving liked video to playlist: ', error);
-//     }
-//    }
-async function handleRemoveVideo() {
+        props.removeFromLikedVideos(props.videoId)
+        //console.log(props.videoId)
 
-    props.removeFromLikedVideos(props.videoId)
-    //console.log(props.videoId)
+        try {
+            const response = await axios.post('http://localhost:3050/removeLikedVideo', null, {
+                params: { videoId: props.videoId, accessToken: props.accessToken }
+            });
 
-    try {
-        const response = await axios.post('http://localhost:3050/removeLikedVideo', null, {
-            params: { videoId: props.videoId, accessToken: props.accessToken }
-        });
-
-        console.log('Liked video: ', response.data);
-    } catch (error) {
-        console.error('Error removing liked video from playlist: ', error);
-    }
-}
+            console.log('Liked video: ', response.data);
+        } catch (error) {
+            console.error('Error removing liked video from playlist: ', error);
+        }
+    } 
 
 
   return (

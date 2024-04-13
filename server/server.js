@@ -37,7 +37,7 @@ const youtubeScopes = [
   'https://www.googleapis.com/auth/youtube',
   'https://www.googleapis.com/auth/youtube.force-ssl',
 ];
-
+ 
 //The first route to be called to initiate the google Oauth proccess
 app.get('/authUrl', async (req, res) => {
     const frontendRedirectUrl = 'http://localhost:3050/handleOAuthCallback';

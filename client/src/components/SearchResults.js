@@ -5,33 +5,41 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 function SearchResults(props) {
-  const [addToLikedVideo, setAddToLike] = useState({});
-    console.log(addToLikedVideo)
+  console.log("likedVideos in SearchResults:", props.likedVideos);
+
 
   async function handleAddLikeVideo(videoId) {
-    //props.addToLikedVideos(props.videoId)
-    //console.log(props.videoId, '/', props.thumbnail, '/', props.title, '/',props.channelTitle, '/', props.timeAgo);
+   
+    const newVideo = {
+      videoId: props.videoId, 
+      thumbnail: props.thumbnail, 
+      title: props.title,  
+      channelTitle: props.channelTitle, 
+      timeAgo: props.timeAgo
+    };
 
-    setAddToLike(
-      {
-        videoId: props.videoId, 
-        thumbnail: props.thumbnail, 
-        title: props.title, 
-        channelTitle: props.channelTitle, 
-        timeAgo: props.timeAgo
-      })
-
+    console.log(newVideo)
+    
     try {
-      const response = await axios.post(
+     
+      const response = await axios.post( 
         "http://localhost:3050/addSearchVideoToPlaylist",
         null,
         {
           params: { videoId: props.videoId, accessToken: props.accessToken },
         }
+       
       ); 
 
-      console.log("Liked video: ", response.data);
+      //console.log("Liked video: ", response.data);
+
+      
+        console.log('success')
+      
+      
     } catch (error) {
+      props.addVideoToPlaylist(newVideo);
+      console.log('error')
       console.error("Error saving liked video to playlist: ", error);
     }
   }

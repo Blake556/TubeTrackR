@@ -22,7 +22,7 @@ function Search(props) {
   // }
 
   async function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault(); 
 
     try {
       setSearchResults([]);
@@ -41,7 +41,7 @@ function Search(props) {
   
   return (
     <div className="search-component ">
-      
+   
         <SearchBar
           searchBar={searchBar}
           handleInputChange={handleInputChange}
@@ -58,7 +58,9 @@ function Search(props) {
             channelTitle={video.channelTitle}
             timeAgo={video.timeAgo}
             accessToken={props.accessToken}
-            // addToLikedVideos={addToLikedVideos}
+            setLikedVideos={props.setLikedVideos}
+            addVideoToPlaylist={props.addVideoToPlaylist}
+            
           />
         ))}
       </div>

@@ -11,7 +11,7 @@ function SearchBar(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.handleSubmit(event);
+    props.handleSubmit(event); 
   };
 
   return ( 

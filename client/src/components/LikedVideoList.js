@@ -4,16 +4,12 @@ import LikedVideo from './LikedVideo'
 import axios from "axios"; 
 
 function LikedVideoList(props) {
-  const [likedVideos, setLikedVideos] = useState([]);
-  console.log(likedVideos)
-
-
+ 
 
   function removeFromLikedVideos(videoId) {
     //let videoExist = likedVideos.find(video =>  video.videoId === videoId)
-
-    setLikedVideos(likedVideos.filter(video => video.videoId !== videoId))
-    //console.log(removedVideo)
+    props.setLikedVideos(props.likedVideos.filter(video => video.videoId !== videoId))
+     
   }
 
   useEffect(() => { 
@@ -25,7 +21,7 @@ function LikedVideoList(props) {
         },
       })
       .then(response => {
-        setLikedVideos(response.data);
+        props.setLikedVideos(response.data);
       })
       .catch(error => {
         console.error('Error fetching liked videos:', error);
@@ -36,7 +32,7 @@ function LikedVideoList(props) {
   
   return (
     <div className="Liked-video-list">
-        { likedVideos.map((video, index) => (
+        { props.likedVideos.map((video, index) => (
             <LikedVideo
                 accessToken={props.accessToken} 
                 id={index} 
