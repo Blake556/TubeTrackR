@@ -50,6 +50,7 @@ app.get('/authUrl', async (req, res) => {
     res.json({ url: authUrl });
 });
 
+
 app.get('/handleOAuthCallback', async (req, res) => {
   const code = req.query.code;
   try {
@@ -63,34 +64,9 @@ app.get('/handleOAuthCallback', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-/*
-// 'handleOAuthCallback'route will use res.json({ url: authUrl }); and extract the data using code variable. 
-app.get('/handleOAuthCallback', async (req, res) => {
-  const code = req.query.code;
-  try {
-    ({ tokens } = await oauth2Client.getToken(code));
-    oauth2Client.setCredentials(tokens);
-    // Call fetchLikedVideos and wait for it to resolve
-    const likedVideos = await fetchLikedVideos(tokens);
 
-     // encodeURIComponent will make the accesstoken formated so it cant be sent through a url. JSON.stringify will turn the obj or array into a string so it can be successfully sent
-    const accessTokenParam = encodeURIComponent(tokens.access_token);
-    // encodeURIComponent will make likedVideos formated so it cant be sent through a url. JSON.stringify will turn the obj or array into a string so it can be successfully sent
-    const likedVideosParam = encodeURIComponent(JSON.stringify(likedVideos));
 
-    //The url that res.redirect will use with accessTokenParam and likedVideosParam will be sent to front end in url
-    const redirectURLWithParams = `http://localhost:3000?accessToken=${accessTokenParam}&likedVideos=${likedVideosParam}`;
-    //Redirect to frontend with the access token and liked videos
-    res.redirect(redirectURLWithParams);
-  } catch (error) { 
-    console.error('Error exchanging code for tokens:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-*/
 app.get('/currentLikedPlaylist', async (req, res) => {
-  //const { accessToken } = req.query;
-  //console.log(accessToken)
   
   try {
     const { accessToken } = req.query; // Assuming access_token is passed in the query params
@@ -138,7 +114,6 @@ app.get('/currentLikedPlaylist', async (req, res) => {
 })
 
 
-
 // This route is called when form on the front-end is submitted
 app.get('/search', async (req, res) => {
   try {
@@ -155,12 +130,10 @@ app.get('/search', async (req, res) => {
 
     });
     
-  
-    
     let searchQuery = response.data.items.map((video) => {
 
-      let publishDate = new Date(video.snippet.publishedAt); 
-      let timeAgo = getTimeAgo(publishDate, currentDate);
+    let publishDate = new Date(video.snippet.publishedAt); 
+    let timeAgo = getTimeAgo(publishDate, currentDate);
 
       return {
         videoId: video.id.videoId,
@@ -179,8 +152,6 @@ app.get('/search', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
-
 
 
 let currentDate = new Date(); 
@@ -208,19 +179,9 @@ function getTimeAgo(publishDate, currentDate) {
 
 
 
-
-
-
-
-
-
-
-
-
-
 app.post('/addSearchVideoToPlaylist', async (req, res) => {
   const { videoId, accessToken} = req.query;
-  //console.log('VideoId: '+  videoId + ' Token: '+ accessToken);
+ 
   try {
     const response = await axios.post(
         `https://www.googleapis.com/youtube/v3/videos/rate?id=${videoId}&rating=like&key=${accessToken}`,
@@ -233,8 +194,7 @@ app.post('/addSearchVideoToPlaylist', async (req, res) => {
         }
     );
 
-    const updatedLikedVideos = await fetchLikedVideos({ access_token: accessToken });
-    res.json({ message: 'Video added to liked playlist', updatedLikedVideos });
+    res.json({ message: 'Video successfully added' });
 } catch (error) {
       console.error('Error:', error);
       res.status(500).json('Internal Server Error');
@@ -258,8 +218,8 @@ app.post('/removeLikedVideo', async (req, res) => {
         }
       );
     
-    //console.log('Response:', response.data);
-    res.json({ message: 'Video removed from liked playlist', response: response.data });
+      // removed from inside down below - response: response.data 
+    res.json({ message: 'Video successfully removed'});
   } catch (error) {
     console.error('Error removing video from liked playlist:', error);
     res.status(500).json({ error: 'Internal Server Error' });

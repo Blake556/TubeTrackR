@@ -9,7 +9,6 @@ function SearchResults(props) {
 
 
   async function handleAddLikeVideo(videoId) {
-   
     const newVideo = {
       videoId: props.videoId, 
       thumbnail: props.thumbnail, 
@@ -18,8 +17,6 @@ function SearchResults(props) {
       timeAgo: props.timeAgo
     };
 
-    console.log(newVideo)
-    
     try {
      
       const response = await axios.post( 
@@ -30,17 +27,10 @@ function SearchResults(props) {
         }
        
       ); 
-
-      //console.log("Liked video: ", response.data);
-
       
-        console.log('success')
-      
-      
+        props.addVideoToPlaylist(newVideo);
     } catch (error) {
-      props.addVideoToPlaylist(newVideo);
-      console.log('error')
-      console.error("Error saving liked video to playlist: ", error);
+        console.error("Error saving liked video to playlist: ", error);
     }
   }
 

@@ -11,7 +11,7 @@ function Home(props) {
   function addVideoToPlaylist(newVideo) {
 // Check if the video is already in the likedVideos array
    // const videoExists = likedVideos.some(video => video.videoId === newVideo.videoId);
-    const videoExist = likedVideos.find(video =>  video.videoId === newVideo.videoId)
+    const videoExist = likedVideos.find(video =>  video.videoId === newVideo.videoId) 
     console.log(newVideo)
     // If the video is not already in the array, add it
     if (!videoExist) {
